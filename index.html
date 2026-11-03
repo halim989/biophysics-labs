@@ -10214,4 +10214,371 @@ setInterval(()=>{if(state.mode==='guide'||state.mode==='welcome')check();},780);
 check();
 })();
 </script>
+
+
+
+
+<style id="carb-proteins-identical-styles">
+
+/* Physical reagent shelf: each bottle itself is the interactive control. */
+#rack{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:11px;margin-top:20px;padding:14px 7px 21px;border-radius:17px;background:linear-gradient(180deg,#102b3b 0%,#0e2635 91%,#654a3b 92%,#392b2b 98%,#112c3b 99%);border:1px solid #38576a;align-items:end}
+#rack .ptn-reagent{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;appearance:none;background:transparent!important;border:none!important;border-radius:14px;box-shadow:none!important;outline:none;position:relative;cursor:pointer;padding:12px 4px 17px;min-height:205px;overflow:visible;text-align:center;transition:transform .2s ease,opacity .2s ease}
+#rack .ptn-reagent:not(:disabled):hover{transform:translateY(-5px);background:transparent!important;box-shadow:none!important}
+#rack .ptn-reagent:focus-visible{outline:3px solid #b6ffec;outline-offset:2px}
+#rack .ptn-reagent:disabled{cursor:default;opacity:.68}
+#rack .ptn-reagent.future{opacity:.85}
+#rack .ptn-reagent.done{background:transparent!important;border:none!important}
+#rack .ptn-reagent.selected{background:transparent!important;outline:none;box-shadow:none!important}
+#rack .ptn-reagent.current{background:transparent!important;border:none!important;box-shadow:none!important}
+#rack .ptn-reagent.current:after{content:'NEXT';font-size:9px;letter-spacing:.1em;color:#b6ffdd;background:#13564e;border:1px solid #78e0b7;position:absolute;right:0;top:3px;border-radius:999px;padding:2px 6px;z-index:4}
+#rack .ptn-reagent.done:after{content:'✓';font-size:14px;color:#baffdf;position:absolute;right:7px;top:2px;z-index:4}
+#rack .ptn-bottle-spot{display:grid!important;place-items:center;position:relative;width:100%;height:142px;min-width:0;z-index:2;flex:none!important;gap:0!important}
+#rack .ptn-bottle{width:84px;height:138px;display:block!important;position:relative;flex:none!important;filter:drop-shadow(7px 12px 8px #0008);transform-origin:50% 98%;transition:transform .25s ease,filter .2s ease}
+#rack .ptn-reagent.selected .ptn-bottle{transform:translateY(-6px) scale(1.075);filter:drop-shadow(0 0 12px #9bf5d9a0) drop-shadow(7px 12px 7px #0008)}
+#rack .ptn-reagent.current .ptn-bottle{filter:drop-shadow(0 0 8px #67e5ce77) drop-shadow(7px 12px 7px #0008)}
+#rack .ptn-bottle-cap{display:block!important;position:absolute;left:23px;top:0;width:38px;height:27px;border-radius:8px 8px 5px 5px;background:repeating-linear-gradient(90deg,transparent 0 3px,#0005 4px 5px),linear-gradient(105deg,#404348 0%,#101318 30%,#06080b 69%,#353a40 100%);box-shadow:inset 0 2px 2px #ffffff26,0 2px 4px #0007;z-index:4}
+#rack .ptn-bottle-neck{display:block!important;position:absolute;top:19px;left:26px;width:32px;height:22px;border-radius:5px;background:linear-gradient(90deg,#322c28,#645347,#302721);z-index:2}
+#rack .ptn-bottle-body{display:block!important;position:absolute;top:32px;left:5px;right:5px;bottom:0;border:1px solid #c3b09e75;border-radius:23px 23px 12px 12px;overflow:hidden;background:linear-gradient(90deg,#76573d 0%,#927359 15%,#463123 44%,#35261d 74%,#765b46 98%);box-shadow:inset 7px 0 13px #f5df9d23,inset -8px 0 14px #0e0a09a8,0 2px 3px #0009}
+#rack .ptn-bottle-body:before{content:'';display:block;position:absolute;top:5px;left:9px;width:15px;height:91px;background:linear-gradient(#ffffff40,#f4d5ac1c 55%,transparent);border-radius:45% 45% 20% 25%;z-index:3;pointer-events:none}
+#rack .ptn-bottle-liquid{display:block!important;position:absolute;bottom:4px;left:3px;right:3px;height:49%;border-radius:0 0 8px 8px;background:var(--ptn-bottle-fluid,#e0f2fc);mix-blend-mode:screen;opacity:.16}
+#rack .ptn-bottle-label{display:grid!important;position:absolute;top:32px;left:3px;right:3px;min-width:0;min-height:44px;padding:5px 3px 4px;border-radius:2px;background:linear-gradient(165deg,#fbfeff,#d2e6f1 80%,#bed7e6);border-top:3px solid #3c719b;box-shadow:0 1px 3px #0004;text-align:center;gap:1px!important;align-content:center;z-index:4}
+#rack .ptn-bottle-brand{display:block!important;font-size:6px;font-weight:800;color:#5482a3;letter-spacing:.11em}
+#rack .ptn-bottle-title{display:block!important;color:#263e60;font-size:11px;font-weight:950;line-height:1.05;overflow-wrap:anywhere}
+#rack .ptn-bottle-sub{display:block!important;color:#456279;font-size:8px;font-weight:750;line-height:1.1}
+#rack .ptn-reagent-meta{position:relative;z-index:2;display:grid!important;gap:3px!important;min-height:40px;align-content:start;justify-items:center;width:100%;max-width:185px;flex:none!important;padding:0 4px}
+#rack .ptn-reagent-meta b{font-size:12px;color:#f4fcff;line-height:1.3}
+#rack .ptn-reagent-meta small{font-size:10px;line-height:1.4;color:#aacbd8}
+#rack .ptn-reagent.selected .ptn-reagent-meta b{color:#bdffec}
+#rack .ptn-reagent[data-ptn-chem="copper"] .ptn-bottle-liquid{--ptn-bottle-fluid:#338bd2;opacity:.45}
+#rack .ptn-reagent[data-ptn-chem="nitric"] .ptn-bottle-liquid{--ptn-bottle-fluid:#e6c350;opacity:.28}
+#rack .ptn-reagent[data-ptn-chem="sample"] .ptn-bottle-liquid{--ptn-bottle-fluid:#b5e5fc;opacity:.3}
+@media(max-width:759px){#rack{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px 4px 14px}#rack .ptn-reagent{min-height:186px;padding:9px 3px 15px;gap:6px;flex-direction:column;align-items:center}#rack .ptn-bottle-spot{height:128px}#rack .ptn-bottle{transform:scale(.90);transform-origin:50% 90%}#rack .ptn-reagent.selected .ptn-bottle{transform:translateY(-5px) scale(.97)}#rack .ptn-reagent-meta b{font-size:11px}#rack .ptn-reagent-meta small{font-size:9.5px}}
+@media(max-width:360px){#rack{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){#rack .ptn-reagent,#rack .ptn-bottle{transition:none!important}}
+
+/* Make the reagent names as legible as the original Protein shelf. */
+#rack .ptn-reagent{font:inherit;color:#f4fcff;min-width:0}
+#rack .ptn-reagent-meta b{overflow-wrap:anywhere;text-wrap:balance}
+#rack .ptn-bottle-label{max-width:calc(100% - 6px)}
+#rack .ptn-bottle-title{overflow-wrap:anywhere}
+#rack .ptn-reagent.selected .ptn-reagent-meta b{color:#bdffec}
+#rack .ptn-reagent.active .ptn-bottle{transform:translateY(-6px) scale(1.075);filter:drop-shadow(0 0 12px #9bf5d9a0) drop-shadow(7px 12px 7px #0008)}
+#rack.carb-transfer-busy .ptn-reagent{pointer-events:none}
+#rack .ptn-reagent:focus-visible{outline:3px solid #b6ffec;outline-offset:2px}
+@media(max-width:759px){#rack .ptn-reagent.active .ptn-bottle{transform:translateY(-5px) scale(.97)}}
+
+
+/* Visual-only simulated heating: hot plate, flickering heat, steam and moving liquid bubbles. */
+#carbVisualOverlay .ptn-heat-fx{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease}
+#carbVisualBench.carb-heating #carbVisualOverlay .ptn-heat-fx{opacity:1;visibility:visible}
+#carbVisualBench.carb-heating{box-shadow:inset 0 -30px 75px rgba(255,126,49,.13)}
+#carbVisualOverlay .ptn-heating-glow{transform-origin:229px 290px;animation:ptn-heat-pulse .9s ease-in-out infinite alternate}
+#carbVisualOverlay .ptn-heating-flame{transform-origin:center bottom;animation:ptn-heat-flame .44s ease-in-out infinite alternate}
+#carbVisualOverlay .ptn-heating-flame.f2{animation-duration:.65s;animation-delay:-.34s}
+#carbVisualOverlay .ptn-heating-flame.f3{animation-duration:.52s;animation-delay:-.21s}
+#carbVisualOverlay .ptn-heating-steam{animation:ptn-heat-steam 1.5s ease-in-out infinite;stroke-dasharray:8 7}
+#carbVisualOverlay .ptn-heating-steam.s2{animation-delay:-.65s}
+#carbVisualOverlay .ptn-heating-steam.s3{animation-delay:-1.03s}
+#carbVisualOverlay .ptn-heating-bubble{opacity:0;animation:ptn-heat-bubble 1.3s ease-in infinite}
+#carbVisualOverlay .ptn-heating-bubble.b2{animation-delay:-.3s;animation-duration:1.6s}
+#carbVisualOverlay .ptn-heating-bubble.b3{animation-delay:-.6s;animation-duration:1.1s}
+#carbVisualOverlay .ptn-heating-bubble.b4{animation-delay:-.9s;animation-duration:1.5s}
+#carbVisualOverlay .ptn-heating-bubble.b5{animation-delay:-1.2s;animation-duration:1.7s}
+#carbVisualOverlay .ptn-heating-progress{transform-box:fill-box;transform-origin:left center;animation:ptn-heat-progress 2.25s linear 1 forwards}
+@keyframes ptn-heat-pulse{from{opacity:.3;transform:scale(.9)}to{opacity:.85;transform:scale(1.13)}}
+@keyframes ptn-heat-flame{from{transform:scaleX(.92) scaleY(.82) rotate(-3deg);opacity:.83}to{transform:scaleX(1.06) scaleY(1.09) rotate(3deg);opacity:1}}
+@keyframes ptn-heat-steam{0%{opacity:0;transform:translateY(7px)}30%{opacity:.77}100%{opacity:0;transform:translateY(-19px)}}
+@keyframes ptn-heat-bubble{0%{opacity:0;transform:translateY(10px) scale(.65)}22%{opacity:.85}82%{opacity:.72}100%{opacity:0;transform:translateY(-78px) scale(1.2)}}
+@keyframes ptn-heat-progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){
+ #carbVisualOverlay .ptn-heating-glow,#carbVisualOverlay .ptn-heating-flame,#carbVisualOverlay .ptn-heating-steam,#carbVisualOverlay .ptn-heating-bubble,#carbVisualOverlay .ptn-heating-progress{animation:none!important}
+ #carbVisualOverlay .ptn-heating-steam,#carbVisualOverlay .ptn-heating-bubble{opacity:.7}
+}
+
+#carbVisualBench{position:relative}
+#carbVisualOverlay{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none;z-index:6;overflow:visible}
+#carbVisualOverlay .ptn-transfer-layer{pointer-events:none}
+#carbVisualBench.carb-transferring{box-shadow:inset 0 0 24px #a2f1db1a}
+#carbVisualOverlay .ptn-moving-pipette{filter:drop-shadow(2px 3px 5px #071c2ea5)}
+#carbVisualBench.carb-transferring #tube{cursor:progress}
+#carbVisualBench.carb-heating #tube{cursor:progress}
+#carbVisualBench.carb-heating .fluid{box-shadow:inset 0 12px 12px #fff3,0 0 14px #ff8f4348}
+#carbVisualBench.carb-heating .bench-label{visibility:hidden}
+#tube.shake{animation:ptn-biuret-shake .7s ease-in-out 1;transform-origin:center center}
+@keyframes ptn-biuret-shake{0%,100%{transform:translateX(0) rotate(0)}15%,45%,75%{transform:translateX(-6px) rotate(-2deg)}30%,60%,90%{transform:translateX(6px) rotate(2deg)}}
+
+#rack.carb-transfer-busy ~ .pad #addBtn{opacity:.7;cursor:progress}
+@media(prefers-reduced-motion:reduce){#carbVisualOverlay .ptn-heating-glow,#carbVisualOverlay .ptn-heating-flame,#carbVisualOverlay .ptn-heating-steam,#carbVisualOverlay .ptn-heating-bubble,#carbVisualOverlay .ptn-heating-progress{animation:none!important}}
+
+</style>
+<script id="carb-proteins-identical-interactions">
+(function(){
+ 'use strict';
+ const rack=document.getElementById('rack');
+ const tube=document.getElementById('tube');
+ const tubeWrap=document.getElementById('tubeWrap');
+ const addBtn=document.getElementById('addBtn');
+ const bench=tubeWrap?.closest('.bench');
+ if(!rack||!tube||!bench||typeof render!=='function'||typeof add!=='function')return;
+ bench.id='carbVisualBench';
+ const ns='http://www.w3.org/2000/svg';
+ const scene=document.createElementNS(ns,'svg');
+ scene.id='carbVisualOverlay';
+ scene.setAttribute('viewBox','0 0 460 350');
+ scene.setAttribute('preserveAspectRatio','xMidYMid meet');
+ scene.setAttribute('aria-hidden','true');
+ scene.innerHTML=`<defs><clipPath id="carbTubeClip"><path d="M179 45 H279 V231 C279 315 179 315 179 231 Z"/></clipPath></defs>
+<g id="carbHeatVisual" class="ptn-heat-fx" aria-hidden="true">
+        <defs>
+         <radialGradient id="carbHeatGlow"><stop stop-color="#ffb94b" stop-opacity=".85"/><stop offset=".5" stop-color="#fc6d2c" stop-opacity=".44"/><stop offset="1" stop-color="#fa6e32" stop-opacity="0"/></radialGradient>
+         <linearGradient id="carbFlameFill" x1="0" y1="1" x2="0" y2="0"><stop stop-color="#e64619"/><stop offset=".5" stop-color="#ff9d27"/><stop offset="1" stop-color="#ffe799"/></linearGradient>
+        </defs>
+        <ellipse class="ptn-heating-glow" cx="229" cy="284" rx="86" ry="70" fill="url(#carbHeatGlow)"/>
+        <g clip-path="url(#carbTubeClip)" fill="none" stroke="#d8f8ff" stroke-width="2.4">
+         <circle class="ptn-heating-bubble b1" cx="205" cy="250" r="4.5"/>
+         <circle class="ptn-heating-bubble b2" cx="237" cy="267" r="3.3"/>
+         <circle class="ptn-heating-bubble b3" cx="256" cy="239" r="5.1"/>
+         <circle class="ptn-heating-bubble b4" cx="219" cy="233" r="2.9"/>
+         <circle class="ptn-heating-bubble b5" cx="245" cy="278" r="3.9"/>
+        </g>
+        <g fill="none" stroke="#fff5c8" stroke-width="3.3" stroke-linecap="round">
+         <path class="ptn-heating-steam s1" d="M206 50 Q193 32 206 16"/>
+         <path class="ptn-heating-steam s2" d="M228 52 Q243 32 229 12"/>
+         <path class="ptn-heating-steam s3" d="M254 50 Q243 35 257 17"/>
+        </g>
+        <g class="ptn-heat-flames">
+         <path class="ptn-heating-flame f1" d="M208 305Q191 289 204 273Q203 289 217 281Q221 267 224 257Q237 277 233 287Q244 281 247 267Q264 290 251 305Z" fill="url(#carbFlameFill)" stroke="#ffc35d" stroke-width="1"/>
+         <path class="ptn-heating-flame f2" d="M220 305Q212 293 222 284Q226 292 232 278Q241 291 238 305Z" fill="#fff3a2" opacity=".87"/>
+         <path class="ptn-heating-flame f3" d="M193 306Q185 299 195 286Q201 297 207 306Z" fill="#ff9d30"/>
+        </g>
+        <g class="ptn-heater-plate">
+         <rect x="178" y="303" width="103" height="9" rx="4" fill="#f6a34b" stroke="#ffdc90" stroke-width="1.5"/>
+         <rect x="183" y="311" width="93" height="24" rx="6" fill="#29485b" stroke="#a0b4bd" stroke-width="2"/>
+         <rect x="190" y="320" width="64" height="5" rx="2.5" fill="#112e42"/>
+         <rect class="ptn-heating-progress" x="190" y="320" width="64" height="5" rx="2.5" fill="#ffb24f"/>
+         <circle cx="265" cy="324" r="3.5" fill="#ff9b35"/>
+        </g>
+        <g><rect x="178" y="337" width="103" height="12" rx="6" fill="#572f21" stroke="#e39047" stroke-width=".7"/><text x="229" y="346" fill="#fff0c3" font-size="8" font-weight="900" text-anchor="middle" letter-spacing="1">VIRTUAL HEATING</text></g>
+       </g>
+ `;
+ bench.append(scene);
+ const reagentLook={
+  sample:{kind:'sample',label:'SAMPLE',sub:'Unknown',fluid:'#afdcec'},
+  naphthol:{kind:'reagent',label:'MOLISCH',sub:'α-Naphthol',fluid:'#edcbb1'},
+  acid:{kind:'reagent',label:'H₂SO₄',sub:'Conc. virtual',fluid:'#dbe5ec'},
+  iodine:{kind:'reagent',label:'IODINE',sub:'Solution',fluid:'#c78b36'},
+  benedict:{kind:'copper',label:'BENEDICT',sub:'Reagent',fluid:'#328fc7'},
+  fehA:{kind:'copper',label:'FEHLING A',sub:'Solution',fluid:'#4d9cdd'},
+  fehB:{kind:'reagent',label:'FEHLING B',sub:'Solution',fluid:'#d7a9de'},
+  osazone:{kind:'reagent',label:'OSAZONE',sub:'Mixture',fluid:'#e8d49a'},
+  hcl:{kind:'reagent',label:'HCl',sub:'Conc. virtual',fluid:'#d3e7ed'}
+ };
+ let visualToken=0,transferFrame=0,transferBusy=false,heatBusy=false,heatTimeout=null;
+ const selectedBeforeRender=()=>selected;
+ function makeBottle(key){
+  const look=reagentLook[key]||{kind:'reagent',label:key.toUpperCase(),sub:'Reagent',fluid:'#c4e5f0'};
+  const r=reagents[key];
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='bottle ptn-reagent';btn.dataset.k=key;btn.dataset.ptnChem=look.kind;
+  btn.setAttribute('aria-label',`Select ${r[0]} as a reagent. Then tap the test tube to transfer.`);
+  const spot=document.createElement('span');spot.className='ptn-bottle-spot';
+  const bottle=document.createElement('span');bottle.className='ptn-bottle';
+  const cap=document.createElement('span');cap.className='ptn-bottle-cap';
+  const neck=document.createElement('span');neck.className='ptn-bottle-neck';
+  const body=document.createElement('span');body.className='ptn-bottle-body';
+  const liquid=document.createElement('span');liquid.className='ptn-bottle-liquid';
+  liquid.style.setProperty('--ptn-bottle-fluid',look.fluid);
+  const label=document.createElement('span');label.className='ptn-bottle-label';
+  const brand=document.createElement('span');brand.className='ptn-bottle-brand';brand.textContent='BIOPHYS · REAGENT';
+  const title=document.createElement('span');title.className='ptn-bottle-title';title.textContent=look.label;
+  const sub=document.createElement('span');sub.className='ptn-bottle-sub';sub.textContent=look.sub;
+  label.append(brand,title,sub);body.append(liquid,label);bottle.append(cap,neck,body);spot.append(bottle);
+  const meta=document.createElement('span');meta.className='ptn-reagent-meta';
+  const name=document.createElement('b');name.textContent=r[0];
+  const detail=document.createElement('small');
+  const amounts=[...new Set(tests[index].steps.filter(a=>a[0]===key).flatMap(a=>a[1].split('|')))];
+  detail.textContent=amounts.length?amounts.join(' / '):'Virtual reagent';
+  meta.append(name,detail);btn.append(spot,meta);
+  return btn;
+ }
+ function buildShelf(){
+  // Identical Protein bottle DOM, with quantities supplied by the Carbohydrates test.
+  const current=tests[index].steps[step];
+  for(const child of [...rack.querySelectorAll('.bottle')]){
+    const key=child.dataset.k, fresh=makeBottle(key);
+    const last=tests[index].steps.map(x=>x[0]).lastIndexOf(key);
+    const first=tests[index].steps.findIndex(x=>x[0]===key);
+    if(last<step)fresh.classList.add('done');
+    else if(first===step)fresh.classList.add('current');
+    else if(first>step)fresh.classList.add('future');
+    if(key===selected)fresh.classList.add('active','selected');
+    fresh.addEventListener('click',()=>{
+      if(transferBusy||heatBusy)return;
+      selected=key;
+      const amounts=[...new Set(tests[index].steps.filter(a=>a[0]===selected).flatMap(a=>a[1].split('|')))];
+      document.getElementById('quantity').replaceChildren(...amounts.map(amount=>{
+        const option=document.createElement('option');option.textContent=amount;option.value=amount;return option;
+      }));
+      qty=amounts[0]||'';
+      if(typeof sound==='function')sound('select');
+      render();
+    });
+    child.replaceWith(fresh);
+  }
+  if(transferBusy||heatBusy)rack.classList.add('carb-transfer-busy');
+  else rack.classList.remove('carb-transfer-busy');
+ }
+ const originalRender=render;
+ render=function(){originalRender();buildShelf();};
+ function cleanupTransfer(){
+  if(transferFrame){cancelAnimationFrame(transferFrame);transferFrame=0;}
+  scene.querySelector('.ptn-transfer-layer')?.remove();
+  bench.classList.remove('carb-transferring');
+ }
+ function stopHeating(){
+  bench.classList.remove('carb-heating');
+  if(heatTimeout!==null){clearTimeout(heatTimeout);heatTimeout=null;}
+  heatBusy=false;
+ }
+ function resetVisuals(){
+  visualToken++;
+  cleanupTransfer();stopHeating();
+  transferBusy=false;
+  rack.classList.remove('carb-transfer-busy');
+  if(addBtn)addBtn.disabled=false;
+ }
+ const oldClearTube=clearTube;
+ clearTube=function(){resetVisuals();oldClearTube();};
+ function animatePipette(key,token,done){
+  cleanupTransfer();
+  const look=reagentLook[key];
+  const layer=document.createElementNS(ns,'g');layer.classList.add('ptn-transfer-layer');layer.setAttribute('aria-hidden','true');
+  layer.innerHTML=`
+
+   <defs><linearGradient id="carbAnimAmber" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#927454"/><stop offset=".35" stop-color="#5b4030"/><stop offset=".85" stop-color="#2b211d"/><stop offset="1" stop-color="#795941"/></linearGradient></defs>
+   <g class="ptn-anim-source-bottle">
+    <ellipse cx="88" cy="279" rx="44" ry="9" fill="#030e18" opacity=".43"/>
+    <rect x="78" y="148" width="20" height="22" rx="4" fill="#635244" stroke="#b89b7c"/>
+    <rect x="53" y="164" width="70" height="107" rx="17" fill="url(#carbAnimAmber)" stroke="#b4a38b" stroke-width="2"/>
+    <path d="M65 182v71" stroke="#fff7d0" stroke-width="7" opacity=".22" stroke-linecap="round"/>
+    <rect x="57" y="200" width="62" height="47" rx="3" fill="#e9f3fb" stroke="#b7d3e4"/>
+    <rect x="57" y="200" width="62" height="5" fill="#4c78a1"/>
+    <text x="88" y="218" text-anchor="middle" font-size="7.5" fill="#477393" font-weight="900">BIOPHYS LABS</text>
+    <text class="ptn-animation-reagent-name" x="88" y="235" text-anchor="middle" font-size="10.5" fill="#1c3855" font-weight="900">REAGENT</text>
+    <text x="88" y="289" text-anchor="middle" font-size="10" fill="#d0f7ef" font-weight="800">SELECTED BOTTLE</text>
+   </g>
+   <g class="ptn-moving-pipette" transform="translate(88,135)">
+    <ellipse cx="0" cy="-88" rx="13" ry="19" fill="#244b66" stroke="#d6f8ff" stroke-width="2"/>
+    <rect x="-5" y="-78" width="10" height="60" rx="4" fill="#ecfaff" opacity=".86" stroke="#87b6ca" stroke-width="1.5"/>
+    <path d="M-4 -19L-2 0L0 10L2 0L4 -19Z" fill="#e9f8ff" stroke="#e3fbff" stroke-width="1.4"/>
+    <rect class="ptn-pipette-solution" x="-3.1" y="-18" width="6.2" height="37" rx="2" fill="#8ce8e6" opacity="0"/>
+    <path d="M-2 -59v29" stroke="#fff" stroke-width="2" opacity=".65"/>
+   </g>
+   <g class="ptn-falling-drop" opacity="0"><circle cx="229" cy="71" r="5.6" fill="#93e8ef" stroke="#f4ffff" stroke-width="1.2"/></g>
+  
+  `;
+  const nameEl=layer.querySelector('.ptn-animation-reagent-name');
+  nameEl.textContent=look.label.length>12?look.label.slice(0,11)+'…':look.label;
+  const reagent=layer.querySelector('.ptn-pipette-solution');
+  reagent.setAttribute('fill',look.fluid);
+  const pip=layer.querySelector('.ptn-moving-pipette');
+  const drop=layer.querySelector('.ptn-falling-drop');
+  const dot=drop.querySelector('circle');dot.setAttribute('fill',look.fluid);
+  scene.append(layer);bench.classList.add('carb-transferring');
+  const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const duration=reduce?180:1650;
+  const ease=p=>p*p*(3-2*p);
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const start=performance.now();
+  function tick(now){
+   if(token!==visualToken){cleanupTransfer();return;}
+   const p=Math.min(1,(now-start)/duration);
+   let x=88,y=136;
+   // Exactly the Protein pipette movement: draw from bottle, lift, transfer, dispense.
+   if(p<.22){y=lerp(136,185,ease(p/.22));}
+   else if(p<.40){y=lerp(185,134,ease((p-.22)/.18));}
+   else if(p<.77){x=lerp(88,229,ease((p-.40)/.37));y=lerp(134,48,ease((p-.40)/.37));}
+   else if(p<.87){x=229;y=lerp(48,61,ease((p-.77)/.10));}
+   else{x=229;y=lerp(61,42,ease((p-.87)/.13));}
+   pip.setAttribute('transform',`translate(${x.toFixed(2)},${y.toFixed(2)})`);
+   reagent.setAttribute('opacity',p>=.22&&p<.90?'0.9':'0');
+   if(p>=.78&&p<.94){
+    const q=(p-.78)/.16;
+    drop.setAttribute('opacity',q<.78?'1':String(Math.max(0,(1-q)/.22)));
+    dot.setAttribute('cy',String(71+q*78));
+   }else drop.setAttribute('opacity','0');
+   if(p>=1){transferFrame=0;cleanupTransfer();done();return;}
+   transferFrame=requestAnimationFrame(tick);
+  }
+  transferFrame=requestAnimationFrame(tick);
+ }
+ const oldAdd=add;
+ function transfer(){
+  if(transferBusy||heatBusy)return;
+  const next=tests[index].steps[step];
+  const quantity=document.getElementById('quantity').value;
+  // Invalid actions use the unmodified Carbohydrates checker and feedback.
+  if(completed[index]||!selected||!next||next[0]!==selected||!next[1].split('|').includes(quantity)){
+   oldAdd();return;
+  }
+  const key=selected,oldIndex=index,oldStep=step;
+  const token=++visualToken;
+  transferBusy=true;
+  rack.classList.add('carb-transfer-busy');
+  if(addBtn){addBtn.disabled=true;addBtn.textContent='🧪 Pipette transferring…';}
+  const status=document.getElementById('status');
+  if(status)status.textContent='🧪 Virtual pipette transferring '+reagents[key][0]+' to the test tube…';
+  animatePipette(key,token,()=>{
+   if(token!==visualToken||oldIndex!==index||oldStep!==step)return;
+   transferBusy=false;rack.classList.remove('carb-transfer-busy');
+   if(addBtn){addBtn.disabled=false;addBtn.textContent='💧 Add to test tube';}
+   oldAdd();
+  });
+ }
+ add=transfer;
+ // Rebind captured handlers: original code assigned `onclick = add` at initialization.
+ addBtn.onclick=transfer;
+ tube.onclick=transfer;
+ function showHeat(){
+  bench.classList.remove('carb-heating');void scene.getBoundingClientRect();
+  bench.classList.add('carb-heating');
+  document.getElementById('status').textContent='🔥 Virtual heating in progress — flame, liquid bubbles and steam.';
+ }
+ const oldAction=action;
+ action=function(kind){
+  if(transferBusy||heatBusy)return;
+  if(kind==='heat'){
+   const next=tests[index].steps[step];
+   // Do not animate an incorrect or out-of-order heating action.
+   if(!next||next[0]!=='heat'||completed[index]||(index===4&&bathStage!==3)){
+     oldAction(kind);return;
+   }
+   const oldIndex=index,oldStep=step,token=++visualToken;
+   heatBusy=true;rack.classList.add('carb-transfer-busy');
+   showHeat();
+   const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+   heatTimeout=setTimeout(()=>{
+     heatTimeout=null;
+     if(token!==visualToken||oldIndex!==index||oldStep!==step)return;
+     bench.classList.remove('carb-heating');heatBusy=false;rack.classList.remove('carb-transfer-busy');
+     oldAction(kind);
+   },reduce?160:2300);
+   return;
+  }
+  oldAction(kind);
+ };
+ // Starting the simulated Osazone bath uses the same flame / bubbles visual language.
+ const boilBtn=document.getElementById('boilBathBtn');
+ boilBtn.addEventListener('click',()=>{
+   if(index===4&&bathStage===2){showHeat();
+     if(heatTimeout!==null)clearTimeout(heatTimeout);
+     heatTimeout=setTimeout(()=>{bench.classList.remove('carb-heating');heatTimeout=null;},2300);
+   }
+ });
+ const txt=document.querySelector('main.layout > section.panel .pad small');
+ if(txt)txt.textContent='Tap a bottle to select it, then tap the test tube. Pipette and heating animations match the Proteins lab.';
+ buildShelf();
+})();
+</script>
+
 </body></html>
